@@ -1,17 +1,30 @@
 import { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, KeyboardAvoidingView, Alert } from 'react-native';
+import { getAuth, signInAnonymously } from "firebase/auth";
+
 
 
 const Start = ({ navigation }) => {
+
+  const auth = getAuth();
+
   const [name, setName] = useState('');
   const [color, setColor] = useState('');
 
-  const startChat = () => {
-    navigation.navigate("Chat", {
-      name: name,
-      color: color,
-    });
+  const signInUser = () => {
+    signInAnonymously(auth)
+      .then(result => {
+        navigation.navigate("Chat", {userID: result.user.uid, name:name , color:color });
+        Alert.alert("Signed in Successfully!");
+      })
+      .catch((error) => {
+        Alert.alert("Unable to sign in, try later again.");
+      })
   }
+
+  
+
+ 
 
   return (
    // image background, and style for container
@@ -32,7 +45,7 @@ const Start = ({ navigation }) => {
         />
         
         <Text style={styles.backgroundText}>Choose Background Color</Text>
-        <View></View>
+        <View>
         {/* Color selectors for background colors. */}
         <View style={styles.color}>
           <TouchableOpacity style={[styles.colorButton, styles.color1]} onPress={() => {
@@ -49,11 +62,10 @@ const Start = ({ navigation }) => {
           }}></TouchableOpacity>
         </View>
           {/* Submit button*/}
-        <TouchableOpacity style={styles.button} onPress={startChat}>
+        <TouchableOpacity style={styles.button} onPress={signInUser}>
           <Text style={styles.buttonText}>Start Chatting</Text>
         </TouchableOpacity>
-       
-      
+      </View>
       </View>
       {Platform.OS === "ios"?<KeyboardAvoidingView behavior="padding" />: null}
     </ImageBackground>
@@ -110,7 +122,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 350,
     height: 100,
-    flexDirection: "row"
+    flexDirection: "row",
+    alignItems: "center"
   },
   colorButton: {
     width: 50,

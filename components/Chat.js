@@ -1,13 +1,40 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { GiftedChat, KeyboardAvoidingView, Bubble } from "react-native-gifted-chat";
+import { collection, getDocs, addDoc, onSnapshot, query, where, orderBy } from "firebase/firestore";
 
 
-const Chat = ({ route }) => {
+const Chat = ({ db, route }) => {
+
+  const { userID } = route.params; 
+  const { name } = route.params;
+  const {color} = route.params;
+
   const [messages, setMessages] = useState([]);
 
+  let unsubMessages;
+
+  useEffect(() => {
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+    unsubMessages = onSnapshot(q, (docs) => {
+      let newMessages = [];
+      docs.forEach(doc => {
+        newMessages.push({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: new Date(doc.data().createdAt.toMillis())
+        })
+      })
+        setMessages(newMessages);
+      });
+        // Clean up code
+    return () => {
+        if (unsubMessages) unsubMessages();
+      }
+    }, []);
+
   const onSend = (newMessages) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
+    addDoc(collection(db, "messages"), newMessages[0])
   }
 // text bubbles user sends
   const renderBubble = (props) => {
@@ -24,8 +51,7 @@ const Chat = ({ route }) => {
     />
   }
 
-    const { name } = route.params;
-    const {color} = route.params;
+   
 // messages that show up when user enters chat
     useEffect(() => {
       setMessages([
@@ -60,7 +86,8 @@ const Chat = ({ route }) => {
           renderBubble={renderBubble}
           onSend={messages => onSend(messages)}
           user={{
-            _id: 1
+            _id: userID,
+            name: name
           }}
         />
         {/* Keyboard avoiding view*/}
