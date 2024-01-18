@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { GiftedChat, KeyboardAvoidingView, Bubble } from "react-native-gifted-chat";
-import { collection, getDocs, addDoc, onSnapshot, query, where, orderBy } from "firebase/firestore";
+import { GiftedChat, KeyboardAvoidingView, Bubble, InputToolbar } from "react-native-gifted-chat";
+import { collection, addDoc, onSnapshot, query, where, orderBy } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-const Chat = ({ db, route }) => {
+const Chat = ({ db, route, navigation, isConnected }) => {
 
   const { userID } = route.params; 
   const { name } = route.params;
@@ -12,9 +12,11 @@ const Chat = ({ db, route }) => {
 
   const [messages, setMessages] = useState([]);
 
+  
   let unsubMessages;
-
   useEffect(() => {
+    if (isConnected === true) {
+     
     const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
     unsubMessages = onSnapshot(q, (docs) => {
       let newMessages = [];
@@ -25,13 +27,34 @@ const Chat = ({ db, route }) => {
           createdAt: new Date(doc.data().createdAt.toMillis())
         })
       })
+        cacheMessages(newMessages)
         setMessages(newMessages);
       });
+    } else loadCachedMessages()
+    
         // Clean up code
     return () => {
-        if (unsubMessages) unsubMessages();
+      if (unsubMessages) unsubMessages();
+      unsubMessages = null;
       }
-    }, []);
+    }, [isConnected]);
+
+    const renderInputToolbar = (props) => {
+      if (isConnected) return <InputToolbar {...props} />;
+      else return null;
+     }
+
+    const cacheMessages = async (messagesToCache) => {
+      try {
+        await AsyncStorage.setItem("messages", JSON.stringify(messagesToCache));
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+      const loadCachedMessages = async () => {
+        const cachedMessages = await AsyncStorage.getItem("messages") || [];
+        setMessages(JSON.parse(cachedMessages));
+      }
 
   const onSend = (newMessages) => {
     addDoc(collection(db, "messages"), newMessages[0])
@@ -81,15 +104,19 @@ const Chat = ({ db, route }) => {
         <View style={[styles.container, { backgroundColor: color }]}>
   
      <Text style={styles.text}>Hi, {name}!</Text>
+     
         <GiftedChat
           messages={messages}
           renderBubble={renderBubble}
+          renderInputToolbar={renderInputToolbar}
           onSend={messages => onSend(messages)}
           user={{
             _id: userID,
             name: name
           }}
+        
         />
+    
         {/* Keyboard avoiding view*/}
         { Platform.OS === 'iOS' ? <KeyboardAvoidingView behavior="padding" /> : null }
    </View>
