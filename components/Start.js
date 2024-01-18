@@ -45,7 +45,7 @@ const Start = ({ navigation }) => {
         />
         
         <Text style={styles.backgroundText}>Choose Background Color</Text>
-        <View>
+        <View style={styles.inputBox}>
         {/* Color selectors for background colors. */}
         <View style={styles.color}>
           <TouchableOpacity style={[styles.colorButton, styles.color1]} onPress={() => {
@@ -117,7 +117,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#757083',
   },
-
+  inputBox: {
+    justifyContent: "center",
+    width: "88%"
+  },
   color: {
     justifyContent: "center",
     width: 350,

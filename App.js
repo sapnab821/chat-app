@@ -10,6 +10,7 @@ import { LogBox, Alert } from "react-native";
 import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
+
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
 const Stack = createNativeStackNavigator();
