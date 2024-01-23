@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, KeyboardAvoidingView, Alert } from 'react-native';
 import { getAuth, signInAnonymously } from "firebase/auth";
-
+import { Platform } from 'react-native';
 
 
 const Start = ({ navigation }) => {

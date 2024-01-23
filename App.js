@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { LogBox, Alert } from "react-native";
 import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-
+import { getStorage } from "firebase/storage";
 
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
@@ -48,6 +48,7 @@ const App = () => {
     // Initialize Cloud Firestore and get a reference to the service
     const db = getFirestore(app);
 
+    const storage = getStorage(app);
     
   return (
     <NavigationContainer style={styles.container}>
@@ -60,7 +61,7 @@ const App = () => {
         />
         <Stack.Screen
           name="Chat">
-           {props => <Chat   db={db} isConnected={connectionStatus.isConnected} {...props} />}
+           {props => <Chat   db={db} storage={storage} isConnected={connectionStatus.isConnected} {...props} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

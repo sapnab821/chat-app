@@ -3,6 +3,8 @@ import { StyleSheet, View, Text } from 'react-native';
 import { GiftedChat, KeyboardAvoidingView, Bubble, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, query, where, orderBy } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
 const Chat = ({ db, route, navigation, isConnected }) => {
 
@@ -97,8 +99,31 @@ const Chat = ({ db, route, navigation, isConnected }) => {
       ]);
     }, []);
 
+    const renderCustomActions = ({props, storage}) => {
+      return <CustomActions {...props} 
+      storage={storage}/>
+    }
 
-
+    const renderCustomView = (props) => {
+      const { currentMessage} = props;
+      if (currentMessage.location) {
+        return (
+            <MapView
+              style={{width: 150,
+                height: 100,
+                borderRadius: 13,
+                margin: 3}}
+              region={{
+                latitude: currentMessage.location.latitude,
+                longitude: currentMessage.location.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+            />
+        );
+      }
+      return null;
+    }
       return (
       //styles of texting screen
         <View style={[styles.container, { backgroundColor: color }]}>
@@ -108,7 +133,9 @@ const Chat = ({ db, route, navigation, isConnected }) => {
         <GiftedChat
           messages={messages}
           renderBubble={renderBubble}
+          renderActions={renderCustomActions}
           renderInputToolbar={renderInputToolbar}
+          renderCustomView={renderCustomView}
           onSend={messages => onSend(messages)}
           user={{
             _id: userID,
