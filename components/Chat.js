@@ -5,6 +5,9 @@ import { collection, addDoc, onSnapshot, query, where, orderBy } from "firebase/
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomActions from './CustomActions';
 import MapView from 'react-native-maps';
+import { Platform } from 'react-native';
+
+
 
 const Chat = ({ db, route, navigation, isConnected }) => {
 
@@ -18,7 +21,7 @@ const Chat = ({ db, route, navigation, isConnected }) => {
   let unsubMessages;
   useEffect(() => {
     if (isConnected === true) {
-     
+      navigation.setOptions({ title: name });
     const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
     unsubMessages = onSnapshot(q, (docs) => {
       let newMessages = [];

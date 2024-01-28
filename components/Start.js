@@ -8,6 +8,8 @@ const Start = ({ navigation }) => {
 
   const auth = getAuth();
 
+ 
+
   const [name, setName] = useState('');
   const [color, setColor] = useState('');
 
@@ -67,7 +69,7 @@ const Start = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       </View>
-      {Platform.OS === "ios"?<KeyboardAvoidingView behavior="padding" />: null}
+      {Platform.OS === "iOS"?<KeyboardAvoidingView behavior="padding" />: null}
     </ImageBackground>
   );
 }
