@@ -19,6 +19,16 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
 
+  const firebaseConfig = {
+    // YOUR FIREBASE CONFIG INFO
+  apiKey: "AIzaSyAkpuKa6Gob0OQ0xhuooy_xt84gAgXXuwA",
+  authDomain: "chat-25e94.firebaseapp.com",
+  projectId: "chat-25e94",
+  storageBucket: "chat-25e94.appspot.com",
+  messagingSenderId: "538664219135",
+  appId: "1:538664219135:web:85823e7c4706740ae877ca"
+  };
+
   const connectionStatus = useNetInfo();
   
   useEffect(() => {
@@ -31,16 +41,6 @@ const App = () => {
   }, [connectionStatus.isConnected]);
 
 
-
-  const firebaseConfig = {
-    // YOUR FIREBASE CONFIG INFO
-  apiKey: "AIzaSyAkpuKa6Gob0OQ0xhuooy_xt84gAgXXuwA",
-  authDomain: "chat-25e94.firebaseapp.com",
-  projectId: "chat-25e94",
-  storageBucket: "chat-25e94.appspot.com",
-  messagingSenderId: "538664219135",
-  appId: "1:538664219135:web:85823e7c4706740ae877ca"
-  };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
