@@ -11,7 +11,7 @@ import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore"
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
-LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
+//LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
 const Stack = createNativeStackNavigator();
 
@@ -21,16 +21,16 @@ const App = () => {
 
   const firebaseConfig = {
     // YOUR FIREBASE CONFIG INFO
-  apiKey: "AIzaSyAkpuKa6Gob0OQ0xhuooy_xt84gAgXXuwA",
-  authDomain: "chat-25e94.firebaseapp.com",
-  projectId: "chat-25e94",
-  storageBucket: "chat-25e94.appspot.com",
-  messagingSenderId: "538664219135",
-  appId: "1:538664219135:web:85823e7c4706740ae877ca"
+    apiKey: "AIzaSyAkpuKa6Gob0OQ0xhuooy_xt84gAgXXuwA",
+    authDomain: "chat-25e94.firebaseapp.com",
+    projectId: "chat-25e94",
+    storageBucket: "chat-25e94.appspot.com",
+    messagingSenderId: "538664219135",
+    appId: "1:538664219135:web:85823e7c4706740ae877ca"
   };
 
   const connectionStatus = useNetInfo();
-  
+
   useEffect(() => {
     if (connectionStatus.isConnected === false) {
       Alert.alert("Connection Lost!");
@@ -42,15 +42,15 @@ const App = () => {
 
 
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
 
 
-    // Initialize Cloud Firestore and get a reference to the service
-    const db = getFirestore(app);
+  // Initialize Cloud Firestore and get a reference to the service
+  const db = getFirestore(app);
 
-    const storage = getStorage(app);
-    
+  const storage = getStorage(app);
+
   return (
     <NavigationContainer style={styles.container}>
       <Stack.Navigator
@@ -62,7 +62,7 @@ const App = () => {
         />
         <Stack.Screen
           name="Chat">
-           {props => <Chat   db={db} storage={storage} isConnected={connectionStatus.isConnected} {...props} />}
+          {props => <Chat db={db} storage={storage} isConnected={connectionStatus.isConnected} {...props} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

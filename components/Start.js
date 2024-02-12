@@ -3,20 +3,22 @@ import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, K
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { Platform } from 'react-native';
 
-
+const image = require("../assets/BackgroundImage.png");
 const Start = ({ navigation }) => {
 
   const auth = getAuth();
 
- 
+
 
   const [name, setName] = useState('');
   const [color, setColor] = useState('');
 
+  // Sign in the user to the chat room using firebase/auth.
+
   const signInUser = () => {
     signInAnonymously(auth)
       .then(result => {
-        navigation.navigate("Chat", {userID: result.user.uid, name:name , color:color });
+        navigation.navigate("Chat", { userID: result.user.uid, name: name, color: color });
         Alert.alert("Signed in Successfully!");
       })
       .catch((error) => {
@@ -24,68 +26,72 @@ const Start = ({ navigation }) => {
       })
   }
 
-  
 
- 
+    ;
 
   return (
-   // image background, and style for container
-    <ImageBackground source={require('./BackgroundImage.png')} resizeMode="cover" style={[styles.image, styles.container]}>
-      
-      {/* chat app text and styles */}
+    // image background, and style for container
+    <View style={styles.container}>
+      <ImageBackground source={image} resizeMode='cover' style={[styles.image, styles.container]}>
+
+        {/* chat app text and styles */}
         <Text style={styles.Text}>Chat App</Text>
-        
+
 
         {/* mainbox */}
         <View style={styles.mainBox}>
           {/* input for user's name */}
-        <TextInput
-          style={styles.textInput}
-          value={name}
-          onChangeText={setName}
-          placeholder='your name'
-        />
-        
-        <Text style={styles.backgroundText}>Choose Background Color</Text>
-        <View style={styles.inputBox}>
-        {/* Color selectors for background colors. */}
-        <View style={styles.color}>
-          <TouchableOpacity style={[styles.colorButton, styles.color1]} onPress={() => {
-            setColor(styles.color1.backgroundColor)
-          }}></TouchableOpacity>
-          <TouchableOpacity style={[styles.colorButton, styles.color2]} onPress={() => {
-            setColor(styles.color2.backgroundColor);
-          }}></TouchableOpacity>
-          <TouchableOpacity style={[styles.colorButton, styles.color3]} onPress={() => {
-            setColor(styles.color3.backgroundColor);
-          }}></TouchableOpacity>
-          <TouchableOpacity style={[styles.colorButton, styles.color4]} onPress={() => {
-            setColor(styles.color4.backgroundColor);
-          }}></TouchableOpacity>
+          <TextInput
+            style={styles.textInput}
+            value={name}
+            onChangeText={setName}
+            placeholder='your name'
+          />
+
+          <Text style={styles.backgroundText}>Choose Background Color</Text>
+          <View style={styles.inputBox}>
+            {/* Color selectors for background colors. */}
+            <View style={styles.color}>
+              <TouchableOpacity style={[styles.colorButton, styles.color1]} onPress={() => {
+                setColor(styles.color1.backgroundColor)
+              }}></TouchableOpacity>
+              <TouchableOpacity style={[styles.colorButton, styles.color2]} onPress={() => {
+                setColor(styles.color2.backgroundColor);
+              }}></TouchableOpacity>
+              <TouchableOpacity style={[styles.colorButton, styles.color3]} onPress={() => {
+                setColor(styles.color3.backgroundColor);
+              }}></TouchableOpacity>
+              <TouchableOpacity style={[styles.colorButton, styles.color4]} onPress={() => {
+                setColor(styles.color4.backgroundColor);
+              }}></TouchableOpacity>
+            </View>
+            {/* Submit button*/}
+            <TouchableOpacity style={styles.button} onPress={signInUser}>
+              <Text style={styles.buttonText}>Start Chatting</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-          {/* Submit button*/}
-        <TouchableOpacity style={styles.button} onPress={signInUser}>
-          <Text style={styles.buttonText}>Start Chatting</Text>
-        </TouchableOpacity>
-      </View>
-      </View>
-      {Platform.OS === "iOS"?<KeyboardAvoidingView behavior="padding" />: null}
-    </ImageBackground>
+
+        {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
+      </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+
     flex: 1,
     justifyContent: "space-around",
-    alignItems: "center"
+    alignItems: "center",
+    height: "100%",
+    width: "100%"
   },
   image: {
-    
+    height: "100%",
+    width: "100%",
     flex: 1,
-    justifyContent: "center"
-    
-    
+    justifyContent: "center",
   },
 
   mainBox: {

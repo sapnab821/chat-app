@@ -6,6 +6,8 @@ import * as ImagePicker from 'expo-image-picker';
 
 const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
     const actionSheet = useActionSheet();
+
+    //displays actions user can perform such as take a picture, send a picture, and send their location
     const onActionPress = () => {
         const options = ['Choose From Library', 'Take a Picture', 'Send Location', 'Cancel']
 
@@ -50,17 +52,25 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
         } else Alert.alert("Permissions haven't been granted.");
     }
 
+    //sends an image to the database to be stored as a blob with the generatedReference id
     const uploadAndSendImage = async (imageURI) => {
+        // generate unique string reference so storage accepts multiple files
         const uniqueRefString = generateReference(imageURI);
-        const newUploadRef = ref(storage, uniqueRefString);
+        // convert imageURI into blob for Firebase Storage
         const response = await fetch(imageURI);
         const blob = await response.blob();
+        // create image reference and upload
+        const newUploadRef = ref(storage, uniqueRefString);
         uploadBytes(newUploadRef, blob).then(async (snapshot) => {
-            const imageURL = await getDownloadURL(snapshot.ref)
-            onSend({ image: imageURL })
+            console.log("File has been uploaded successfully");
+            // get remote image URL and send in message
+            const imageURL = await getDownloadURL(snapshot.ref);
+            onSend({ image: imageURL });
         });
-    }
+    };
 
+
+    //user can pick image from library to be sent
     const pickImage = async () => {
         let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissions?.granted) {
@@ -70,6 +80,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
         }
     }
 
+    //the user can take photo using the camera on their device
     const takePhoto = async () => {
         let permissions = await ImagePicker.requestCameraPermissionsAsync();
         if (permissions?.granted) {
@@ -79,6 +90,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
         }
     }
 
+    //generates reference for database to use, create and retrieve image in the database
     const generateReference = (uri) => {
         const timeStamp = (new Date()).getTime();
         const imageName = uri.split("/")[uri.split("/").length - 1];
